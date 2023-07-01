@@ -11,32 +11,27 @@ import {
 import { saveAs } from "file-saver";
 import "./App.css";
 
-const BORDERS = {
-  top: {
-    color: "auto",
-    space: 1,
-    style: "single",
-    size: 5,
-  },
-  bottom: {
-    color: "auto",
-    space: 1,
-    style: "single",
-    size: 5,
-  },
-  left: {
-    color: "auto",
-    space: 1,
-    style: "single",
-    size: 5,
-  },
-  right: {
-    color: "auto",
-    space: 1,
-    style: "single",
-    size: 5,
-  },
+const BORDER = {
+  color: "auto",
+  space: 1,
+  style: "single",
+  size: 5,
 };
+
+const BORDERS = {
+  top: BORDER,
+  bottom: BORDER,
+  right: BORDER,
+  left: BORDER,
+};
+
+const MARGIN = 300;
+const WIDTH_SUM = 11100;
+const FONT = "Heebo";
+let currentPosition = 0;
+
+const WIDTH = 6000;
+const HEIGHT = 2000;
 
 function generate() {
   const doc = new Document({
@@ -45,10 +40,10 @@ function generate() {
         properties: {
           page: {
             margin: {
-              top: 300,
-              right: 300,
-              bottom: 300,
-              left: 300,
+              top: MARGIN,
+              right: MARGIN,
+              bottom: MARGIN,
+              left: MARGIN,
             },
           },
         },
@@ -56,30 +51,58 @@ function generate() {
           new Paragraph({
             alignment: AlignmentType.BOTH,
             frame: {
-              // position: {
-              //   x: 6100,
-              //   y: -1000,
-              // },
-              width: 4000,
-              // height: 1000,
+              position: {
+                x: 0,
+                y: 0,
+              },
+              width: WIDTH,
+              height: HEIGHT,
               anchor: {
                 horizontal: FrameAnchorType.TEXT,
                 vertical: FrameAnchorType.TEXT,
               },
-              space: {
-                horizontal: 2000,
-                vertical: 2,
-              },
-              alignment: {
-                x: HorizontalPositionAlign.RIGHT,
-                y: VerticalPositionAlign.TOP,
-              },
+              // alignment: {
+              //   x: HorizontalPositionAlign.LEFT,
+              //   y: VerticalPositionAlign.TOP,
+              // },
             },
             border: BORDERS,
             children: [
               new TextRun({
-                text: "שלום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולם",
-                font: "Heebo",
+                text: "כותרת",
+                bold: true,
+                font: FONT,
+              }),
+              new TextRun({
+                text: "שלום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולו",
+                break: 1,
+                font: FONT,
+              }),
+            ],
+          }),
+          new Paragraph({
+            alignment: AlignmentType.BOTH,
+            frame: {
+              position: {
+                x: WIDTH + MARGIN - 20,
+                y: currentPosition,
+              },
+              width: WIDTH_SUM - WIDTH,
+              height: HEIGHT,
+              anchor: {
+                horizontal: FrameAnchorType.TEXT,
+                vertical: FrameAnchorType.TEXT,
+              },
+              // alignment: {
+              //   x: HorizontalPositionAlign.RIGHT,
+              //   y: VerticalPositionAlign.TOP,
+              // },
+            },
+            border: BORDERS,
+            children: [
+              new TextRun({
+                text: "שלום עולום עולום עולום עולום עולום עולום עולום עולום עולום עולו",
+                font: FONT,
               }),
             ],
           }),
@@ -87,6 +110,8 @@ function generate() {
       },
     ],
   });
+
+  console.log(doc);
 
   Packer.toBlob(doc).then((blob) => {
     saveAs(blob, "example.docx");
