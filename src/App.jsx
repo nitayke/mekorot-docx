@@ -10,6 +10,7 @@ import {
 import { saveAs } from "file-saver";
 import "./App.css";
 import Form from "./Form";
+import { useState } from "react";
 
 const BORDER = {
   color: "auto",
@@ -51,7 +52,7 @@ function randomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
-function newTextBox(x, y, w, h, text) {
+function newTextBox(x, y, w, h, text, heading) {
   return new Paragraph({
     bidirectional: true,
     alignment: AlignmentType.BOTH,
@@ -70,7 +71,7 @@ function newTextBox(x, y, w, h, text) {
     border: BORDERS,
     children: [
       new TextRun({
-        text: "כותרת",
+        text: heading,
         font: FONT,
         bold: true,
         size: 22,
@@ -87,7 +88,15 @@ function newTextBox(x, y, w, h, text) {
   });
 }
 
-function locateSideBySide(textBoxes, ratio, first, second, currPosition) {
+function locateSideBySide(
+  textBoxes,
+  ratio,
+  first,
+  second,
+  currPosition,
+  firstName,
+  secondName
+) {
   let width = (ratio / (ratio + 1)) * WIDTH_SUM;
   let chars_in_curr_line = [
     (width / WIDTH_SUM) * CHARS_IN_LINE - HORIZONTAL_SPACE / 100,
@@ -99,37 +108,45 @@ function locateSideBySide(textBoxes, ratio, first, second, currPosition) {
       Math.floor(second.length / chars_in_curr_line[1])
     ) + 2;
   let height = lines_count * LINE_HEIGHT;
-  textBoxes.push(newTextBox(0, currPosition, width, height, first));
+  textBoxes.push(newTextBox(0, currPosition, width, height, first, firstName));
   textBoxes.push(
     newTextBox(
       width + HORIZONTAL_SPACE,
       currPosition,
       WIDTH_SUM - width,
       height,
-      second
+      second,
+      secondName
     )
   );
   return height;
 }
 
-function locateSingle(textBoxes, makor, currPosition) {
+function locateSingle(textBoxes, makor, currPosition, makorName) {
   let lines_count =
     Math.floor(makor.length / CHARS_IN_LINE) + HORIZONTAL_SPACE / 100;
   let height = lines_count * LINE_HEIGHT;
   textBoxes.push(
-    newTextBox(0, currPosition, WIDTH_SUM + HORIZONTAL_SPACE, height, makor)
+    newTextBox(
+      0,
+      currPosition,
+      WIDTH_SUM + HORIZONTAL_SPACE,
+      height,
+      makor,
+      makorName
+    )
   );
   return height;
 }
 
-function generateDaf() {
+function generateDaf(mekorot, mekorotNames) {
   let currentPosition = 0;
-  let mekorot = generateMekorotList();
+  console.log(mekorot);
   let textBoxes = [];
   let height;
   for (let i = 0; i < mekorot.length; i++) {
     if (i === mekorot.length - 1) {
-      locateSingle(textBoxes, mekorot[i], currentPosition);
+      locateSingle(textBoxes, mekorot[i], currentPosition, mekorotNames[i]);
       break;
     }
     let ratio = mekorot[i].length / mekorot[i + 1].length;
@@ -139,11 +156,18 @@ function generateDaf() {
         ratio,
         mekorot[i],
         mekorot[i + 1],
-        currentPosition
+        currentPosition,
+        mekorotNames[i],
+        mekorotNames[i + 1]
       );
       i++;
     } else {
-      height = locateSingle(textBoxes, mekorot[i], currentPosition);
+      height = locateSingle(
+        textBoxes,
+        mekorot[i],
+        currentPosition,
+        mekorotNames[i]
+      );
     }
     currentPosition += height + VERTICAL_SPACE;
   }
@@ -172,5 +196,14 @@ function generateDaf() {
 }
 
 export default function App() {
-  return <Form />;
+  const [mekorot, setMekorot] = useState([]);
+  const [mekorotNames, setMekorotNames] = useState([]);
+  return (
+    <>
+      <Form setMekorot={setMekorot} setMekorotNames={setMekorotNames} />
+      <button onClick={() => generateDaf(mekorot, mekorotNames)}>
+        הורד דף
+      </button>
+    </>
+  );
 }

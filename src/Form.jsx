@@ -1,21 +1,27 @@
 import { useState } from "react";
 
-export default function Form() {
+export default function Form({ setMekorot, setMekorotNames }) {
   const [source, setSource] = useState("");
-  const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
+  const [mekorotList, setMekorotList] = useState([]);
 
   const fetchData = async () => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `https://www.sefaria.org/api/texts/${source}?context=0&pad=0&lang=he`
+        `https://www.sefaria.org/api/texts/${source}?context=0&pad=0`
       );
       const data = await response.json();
-      setData(data["he"]);
       setIsLoading(false);
       setError("");
+      setMekorotList((prevArr) => [...prevArr, source]);
+      setMekorotNames(mekorotList);
+      let text = data["he"];
+      if (Array.isArray(data["he"])) text = data["he"].join("\n");
+      let cleanText = text.replace(/<\/?[^>]+(>|$)/g, ""); // MAYBE IT CAN BE CONVERTED TO WORD FORMAT INSTEAD OF BEING DELETED
+      console.log(cleanText);
+      setMekorot((prev) => [...prev, cleanText]);
     } catch (error) {
       setError(error);
       setIsLoading(false);
@@ -42,6 +48,10 @@ export default function Form() {
         מלכים ב' א | מל"ב א:ה | מל"ב א ה | מל"ב א-ד | מל"ב ב:ג-ו | מל"ב ב:ג-ג:ג
         | מל"ב ב, ג | מל"ב פרק ב פסוק ג | שבת ז: | שבת דף ז עמוד ב | רי"ף שבת ז:
       </p>
+      <h3>מקורות שהוספת עד כה:</h3>
+      {mekorotList.map((makor) => (
+        <p key={makor}>{makor}</p>
+      ))}
       <form onSubmit={submit}>
         <div>
           <input
@@ -51,16 +61,10 @@ export default function Form() {
             placeholder="הזן מקור..."
           />
         </div>
-        <button type="submit">שלח</button>
+        <button type="submit">{isLoading ? "טוען..." : "הוסף"}</button>
       </form>
 
-      {isLoading && <p>טוען...</p>}
-      {error && <p>משהו השתבש: {error.message}</p>}
-      {data && (
-        <div>
-          <pre>{data}</pre>
-        </div>
-      )}
+      {error && <p>חלה תקלה: {error.message}</p>}
     </>
   );
 }

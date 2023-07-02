@@ -14,7 +14,6 @@
 input {
   padding: 0.6em 1.2em;
   font-family: inherit;
-  margin-bottom: 1em;
   border-radius: 8px;
 }
 
@@ -26,6 +25,7 @@ button {
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.25s;
+  margin: 1em;
 }
 button:focus,
 button:focus-visible {
