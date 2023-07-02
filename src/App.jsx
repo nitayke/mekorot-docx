@@ -6,10 +6,10 @@ import {
   FrameAnchorType,
   AlignmentType,
   BorderStyle,
-  ColumnBreak,
 } from "docx";
 import { saveAs } from "file-saver";
 import "./App.css";
+import Form from "./Form";
 
 const BORDER = {
   color: "auto",
@@ -76,7 +76,6 @@ function newTextBox(x, y, w, h, text) {
         size: 22,
         rightToLeft: true,
       }),
-      new ColumnBreak(),
       new TextRun({
         break: 1,
         text: text,
@@ -114,7 +113,8 @@ function locateSideBySide(textBoxes, ratio, first, second, currPosition) {
 }
 
 function locateSingle(textBoxes, makor, currPosition) {
-  let lines_count = Math.floor(makor.length / CHARS_IN_LINE) + 2.5;
+  let lines_count =
+    Math.floor(makor.length / CHARS_IN_LINE) + HORIZONTAL_SPACE / 100;
   let height = lines_count * LINE_HEIGHT;
   textBoxes.push(
     newTextBox(0, currPosition, WIDTH_SUM + HORIZONTAL_SPACE, height, makor)
@@ -122,7 +122,7 @@ function locateSingle(textBoxes, makor, currPosition) {
   return height;
 }
 
-function generate() {
+function generateDaf() {
   let currentPosition = 0;
   let mekorot = generateMekorotList();
   let textBoxes = [];
@@ -172,5 +172,5 @@ function generate() {
 }
 
 export default function App() {
-  return <button onClick={generate}>קבל</button>;
+  return <Form />;
 }
