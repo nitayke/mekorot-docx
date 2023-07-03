@@ -6,7 +6,7 @@ export default function Form({ setMekorot, setMekorotNames }) {
   const [error, setError] = useState("");
   const [mekorotList, setMekorotList] = useState([]);
 
-  const fetchData = async () => {
+  async function fetchData() {
     try {
       setIsLoading(true);
       const response = await fetch(
@@ -15,8 +15,8 @@ export default function Form({ setMekorot, setMekorotNames }) {
       const data = await response.json();
       setIsLoading(false);
       setError("");
-      setMekorotList((prevArr) => [...prevArr, source]);
-      setMekorotNames(mekorotList);
+      setMekorotList((prev) => [...prev, source]);
+      setMekorotNames((prev) => [...prev, source]);
       let text = data["he"];
       if (Array.isArray(data["he"])) text = data["he"].join("\n");
       let cleanText = text.replace(/<\/?[^>]+(>|$)/g, ""); // MAYBE IT CAN BE CONVERTED TO WORD FORMAT INSTEAD OF BEING DELETED
@@ -26,7 +26,7 @@ export default function Form({ setMekorot, setMekorotNames }) {
       setError(error);
       setIsLoading(false);
     }
-  };
+  }
 
   function submit(e) {
     e.preventDefault();
