@@ -6,6 +6,7 @@ import {
   FrameAnchorType,
   AlignmentType,
   BorderStyle,
+  OnOffElement,
 } from "docx";
 import { saveAs } from "file-saver";
 
@@ -189,6 +190,7 @@ function simpleDesign(mekorot, mekorotNames) {
   for (let i = 0; i < mekorot.length; i++) {
     paragraphs.push(
       new Paragraph({
+        bidirectional: true,
         children: [getTextRun(mekorotNames[i], true)],
       })
     );
@@ -200,7 +202,7 @@ function simpleDesign(mekorot, mekorotNames) {
       })
     );
   }
-  return new Document({
+  let doc = new Document({
     sections: [
       {
         properties: {
@@ -213,6 +215,11 @@ function simpleDesign(mekorot, mekorotNames) {
       },
     ],
   });
+  // RTL
+  doc.documentWrapper.document.body.sections[0].root.push(
+    new OnOffElement("w:bidi", true)
+  );
+  return doc;
 }
 
 export function createDaf(mekorot, mekorotNames, design) {
