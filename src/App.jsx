@@ -16,7 +16,7 @@ const BORDER = {
   color: "auto",
   space: 1,
   style: BorderStyle.SINGLE,
-  size: 5,
+  size: 7,
 };
 
 const BORDERS = {
@@ -141,7 +141,6 @@ function locateSingle(textBoxes, makor, currPosition, makorName) {
 
 function generateDaf(mekorot, mekorotNames) {
   let currentPosition = 0;
-  console.log(mekorot);
   let textBoxes = [];
   let height;
   for (let i = 0; i < mekorot.length; i++) {
@@ -203,6 +202,16 @@ export default function App() {
       <Form setMekorot={setMekorot} setMekorotNames={setMekorotNames} />
       <button onClick={() => generateDaf(mekorot, mekorotNames)}>
         הורד דף
+      </button>
+      <button
+        onClick={() =>
+          generateDaf(
+            generateMekorotList(),
+            Array(MEKOROT_COUNT).fill("כותרת לדוגמה")
+          )
+        }
+      >
+        הורד דף לדוגמה (מיוצר רנדומלית)
       </button>
     </>
   );
