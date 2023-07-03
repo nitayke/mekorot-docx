@@ -6,8 +6,6 @@ import {
   FrameAnchorType,
   AlignmentType,
   BorderStyle,
-  VerticalAlign,
-  PageTextDirectionType,
 } from "docx";
 import { saveAs } from "file-saver";
 
