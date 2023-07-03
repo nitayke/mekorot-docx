@@ -1,5 +1,14 @@
 import { useState } from "react";
 
+// MAKE IT SELECTABLE?
+function getCleanText(text) {
+  text = text.replace(/[\u05BE]/g, " "); // TURNS "־" TO " "
+  text = text.replace(/<\/?[^>]+(>|$)/g, ""); // HTML TAGS
+  text = text.replace(/{.*?}/g, ""); // "{פ}"
+  text = text.replace(/\s*\(.*?\)\s*/g, ": "); // "(הפניה)"
+  return text.replace(/[\x21-\x7e|\u0591-\u05C4|\u2010-\u2015]/gu, "");
+}
+
 export default function Form({ setMekorot, setMekorotNames }) {
   const [source, setSource] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,9 +28,7 @@ export default function Form({ setMekorot, setMekorotNames }) {
       setMekorotNames((prev) => [...prev, source]);
       let text = data["he"];
       if (Array.isArray(data["he"])) text = data["he"].join("\n");
-      let cleanText = text.replace(/<\/?[^>]+(>|$)/g, ""); // MAYBE IT CAN BE CONVERTED TO WORD FORMAT INSTEAD OF BEING DELETED
-      console.log(cleanText);
-      setMekorot((prev) => [...prev, cleanText]);
+      setMekorot((prev) => [...prev, getCleanText(text)]);
     } catch (error) {
       setError(error);
       setIsLoading(false);

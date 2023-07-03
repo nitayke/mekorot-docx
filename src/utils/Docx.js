@@ -14,7 +14,7 @@ const MARGIN = 300;
 const PAGE_SIZE = { height: 16838, width: 11906 }; // SIZE OF A4
 // const PAGE_WIDTH = 11050;
 const FONT = "David";
-const FONT_SIZE = 24;
+const FONT_SIZE = 22;
 const CHARS_IN_LINE = 2800 / FONT_SIZE;
 const LINE_HEIGHT = 10 * FONT_SIZE;
 const VERTICAL_SPACE = 150;
@@ -107,6 +107,7 @@ function locateSideBySide(
 ) {
   let width = (ratio / (ratio + 1)) * PAGE_WIDTH;
   let height = calculateTextBoxHeight((first.length + second.length) * 1.1);
+  console.log("vhbv", first.length, second.length);
   textBoxes.push(newTextBox(0, currPosition, width, height, first, firstName));
   textBoxes.push(
     newTextBox(
@@ -167,7 +168,6 @@ function textBoxesDesign(mekorot, mekorotNames) {
       );
     }
     currentPosition += textBoxHeight + VERTICAL_SPACE;
-    console.log(currentPosition);
   }
 
   return new Document({
