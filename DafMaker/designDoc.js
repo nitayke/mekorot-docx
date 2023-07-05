@@ -29,7 +29,7 @@ function getMargins(margin) {
   return { top: margin, bottom: margin, right: margin, left: margin };
 }
 
-export function generateMekorotList() {
+function generateMekorotList() {
   let mekorot = [];
   for (let i = 0; i < MEKOROT_COUNT; i++) {
     let start = randomInt(EXAMPLE_MAKOR.length);
@@ -173,13 +173,16 @@ function saveFile(doc, name) {
   });
 }
 
-export function createSimpleDaf(mekorot) {
+function createSimpleDaf(mekorot) {
   let doc = simpleDesign(mekorot);
   saveFile(doc, "סגנון 1");
 }
 
-export function createTextBoxesDaf(mekorot) {
+function createTextBoxesDaf(mekorot) {
   calculateTextBoxesDimensions(mekorot);
   let doc = textBoxesDesign(mekorot);
   saveFile(doc, "סגנון 2");
+  return doc;
 }
+
+export { createSimpleDaf, createTextBoxesDaf, generateMekorotList };
