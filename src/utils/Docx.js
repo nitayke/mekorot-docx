@@ -62,13 +62,13 @@ function randomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
-function getTextRun(text, heading = false) {
+function getTextRun(text, isHeading = false) {
   return new TextRun({
     text: text,
     font: FONT,
-    size: FONT_SIZE + heading * 4,
+    size: FONT_SIZE + isHeading * 4,
     rightToLeft: true,
-    bold: heading,
+    bold: isHeading,
   });
 }
 
@@ -120,14 +120,12 @@ function locateSideBySide(
       secondName
     )
   );
-  return height;
 }
 
 function locateSingle(textBoxes, makor, makorName, height) {
   textBoxes.push(
     newTextBox(0, PAGE_WIDTH + HORIZONTAL_SPACE, height, makor, makorName)
   );
-  return height;
 }
 
 function textBoxesDesign(mekorot, mekorotNames) {
@@ -137,20 +135,20 @@ function textBoxesDesign(mekorot, mekorotNames) {
   let textBoxHeight;
   for (let i = 0; i < mekorot.length; i++) {
     if (i === mekorot.length - 1) {
-      let height = calculateTextBoxHeight(mekorot[i].length);
-      locateSingle(textBoxes, mekorot[i], mekorotNames[i], height);
+      textBoxHeight = calculateTextBoxHeight(mekorot[i].length);
+      locateSingle(textBoxes, mekorot[i], mekorotNames[i], textBoxHeight);
       break;
     }
     let ratio = mekorot[i].length / mekorot[i + 1].length;
     if (ratio < MAX_RATIO && ratio > 1 / MAX_RATIO) {
-      let width = (ratio / (ratio + 1)) * PAGE_WIDTH;
-      let height = calculateTextBoxHeight(
+      let textBoxWidth = (ratio / (ratio + 1)) * PAGE_WIDTH;
+      textBoxHeight = calculateTextBoxHeight(
         (mekorot[i].length + mekorot[i + 1].length) * 1.1
       );
-      textBoxHeight = locateSideBySide(
+      locateSideBySide(
         textBoxes,
-        width,
-        height,
+        textBoxWidth,
+        textBoxHeight,
         mekorot[i],
         mekorot[i + 1],
         mekorotNames[i],
@@ -158,13 +156,8 @@ function textBoxesDesign(mekorot, mekorotNames) {
       );
       i++;
     } else {
-      let height = calculateTextBoxHeight(mekorot[i].length);
-      textBoxHeight = locateSingle(
-        textBoxes,
-        mekorot[i],
-        mekorotNames[i],
-        height
-      );
+      textBoxHeight = calculateTextBoxHeight(mekorot[i].length);
+      locateSingle(textBoxes, mekorot[i], mekorotNames[i], textBoxHeight);
     }
     currentPosition += textBoxHeight + VERTICAL_SPACE;
   }
@@ -195,6 +188,7 @@ function simpleDesign(mekorot, mekorotNames) {
     );
     paragraphs.push(
       new Paragraph({
+        bidirectional: true,
         alignment: AlignmentType.BOTH,
         children: [getTextRun(mekorot[i])],
       })
