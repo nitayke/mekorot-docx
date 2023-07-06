@@ -31,10 +31,11 @@ function getMargins(margin) {
 
 function generateMekorotList() {
   let mekorot = [];
+  const makor = EXAMPLE_MAKOR.repeat(3);
   for (let i = 0; i < MEKOROT_COUNT; i++) {
-    let start = randomInt(EXAMPLE_MAKOR.length);
-    let end = start + randomInt(EXAMPLE_MAKOR.length - start);
-    let currentString = EXAMPLE_MAKOR.slice(start, end);
+    let start = randomInt(makor.length);
+    let end = start + randomInt(makor.length - start);
+    let currentString = makor.slice(start, end);
     mekorot.push({ title: "כותרת לדוגמה", content: currentString });
   }
   return mekorot;

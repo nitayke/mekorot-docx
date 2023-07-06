@@ -7,7 +7,7 @@ import {
 } from "./constants";
 
 function concatenateMekorotLength(firstLength, secondLength) {
-  return (firstLength + secondLength) * 1.1;
+  return (firstLength + secondLength) * 1.05;
 }
 
 function calculateTwoBoxesWidth(ratio) {
@@ -16,13 +16,24 @@ function calculateTwoBoxesWidth(ratio) {
 }
 
 function calculateTextBoxHeight(textLength) {
-  let lines_count = Math.floor(textLength / CHARS_IN_LINE) + 2;
+  let lines_count = Math.ceil(textLength / CHARS_IN_LINE) + 1;
   return lines_count * LINE_HEIGHT;
 }
 
 function addSingleBoxDimensions(makor) {
   makor.height = calculateTextBoxHeight(makor.content.length);
   makor.width = SINGLE_TEXTBOX_WIDTH;
+}
+
+function addSideBySideDimensions(first, second) {
+  const firstLength = first.content.length;
+  const secondLength = second.content.length;
+  const { left, right } = calculateTwoBoxesWidth(firstLength / secondLength);
+  first.width = left;
+  second.width = right;
+  first.height = second.height = calculateTextBoxHeight(
+    concatenateMekorotLength(firstLength, secondLength)
+  );
 }
 
 function isRatioValid(ratio) {
@@ -35,16 +46,10 @@ function calculateTextBoxesDimensions(mekorot) {
       addSingleBoxDimensions(mekorot[i]);
       break;
     }
-    const firstLength = mekorot[i].content.length;
-    const secondLength = mekorot[i + 1].content.length;
-    const ratio = firstLength / secondLength;
-    if (isRatioValid(ratio)) {
-      const { left, right } = calculateTwoBoxesWidth(ratio);
-      mekorot[i].width = left;
-      mekorot[i + 1].width = right;
-      mekorot[i].height = mekorot[i + 1].height = calculateTextBoxHeight(
-        concatenateMekorotLength(firstLength, secondLength)
-      );
+    if (
+      isRatioValid(mekorot[i].content.length / mekorot[i + 1].content.length)
+    ) {
+      addSideBySideDimensions(mekorot[i], mekorot[i + 1]);
       i++;
     } else {
       addSingleBoxDimensions(mekorot[i]);
